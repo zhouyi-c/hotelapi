@@ -5,12 +5,25 @@ import time
 import hashlib
 import json
 from openai import OpenAI  # 导入OpenAI SDK
+from dotenv import load_dotenv
+import os
 
+# 这行代码会加载.env文件中的变量
+
+load_dotenv()
 app = FastAPI()
 
 # 千帆API配置（替换为你的千帆API Key）
-QIANFAN_API_KEY = "bce-v3/ALTAK-8aQMewMUYm94lfFubPwZF/5c65b326b3f078741d4dbb5c8c0827acbf084c3a"  # 完整的API Key（包含bce-v3/前缀）
+#QIANFAN_API_KEY = "bce-v3/ALTAK-8aQMewMUYm94lfFubPwZF/5c65b326b3f078741d4dbb5c8c0827acbf084c3a"  # 完整的API Key（包含bce-v3/前缀）
 QIANFAN_BASE_URL = "https://qianfan.baidubce.com/v2"  # 千帆API基础地址
+# 修改前
+# QIANFAN_API_KEY = "bce-v3/ALTAK-8aQMewMUYm94lfFubPwZF/5c65b326b3f078741d4dbb5c8c0827acbf084c3a"
+
+# 修改后
+QIANFAN_API_KEY = os.getenv("QIANFAN_API_KEY")
+if not QIANFAN_API_KEY:
+    raise ValueError("请设置QIANFAN_API_KEY环境变量")
+
 
 fake_db = [
     {"id": 1, "name": "四季酒店", "price": 800, "date": "2025-07-10"},
