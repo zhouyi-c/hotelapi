@@ -1,13 +1,20 @@
+from typing import Optional
+
 from fastapi import FastAPI, HTTPException
-import os
-import requests
-import time
-import hashlib
-import json
-from openai import OpenAI  # 导入OpenAI SDK
+from openai import OpenAI, models  # 导入OpenAI SDK
 from dotenv import load_dotenv
 import os
+from pydantic import BaseModel, conint
+from datetime import date
 
+
+
+
+
+class HotelQuery(BaseModel):
+    min_price: conint(ge=0) = 0
+    max_price: conint(le=10000) = 1000
+    date: Optional[date] = None
 # 这行代码会加载.env文件中的变量
 
 load_dotenv()
@@ -56,6 +63,7 @@ def build_crispe_prompt():
 # 使用千帆平台处理投诉（使用OpenAI兼容接口）
 def handle_complaint_with_qianfan(user_message: str):
     try:
+
         # 创建OpenAI客户端（配置千帆参数）
         client = OpenAI(
             api_key=QIANFAN_API_KEY,
