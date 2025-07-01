@@ -11,8 +11,13 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain, llm
 from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
-from langchain.agents import Tool, initialize_agent
+from langchain.agents import Tool, initialize_agent, AgentType
 from langchain.tools import BaseTool
+
+# 创建酒店查询工具
+import json
+from datetime import date
+from typing import Any, Dict, Optional
 
 class HotelQuery(BaseModel):
     min_price: conint(ge=0) = 0
@@ -135,38 +140,71 @@ from langchain.agents import Tool, initialize_agent
 from langchain.tools import BaseTool
 
 
-# 创建酒店查询工具
+# 优化后的酒店查询工具
 class HotelSearchTool(BaseTool):
-    name:str = "hotel_search"
-    description:str = "根据价格范围和日期查询酒店信息"
+    name: str = "hotel_search"
+    description: str = (
+        "根据价格范围(min_price和max_price)和日期(date)查询酒店信息。"
+        "参数要求：min_price为整数（最低价格），max_price为整数（最高价格），date为字符串（格式YYYY-MM-DD）。"
+        "返回匹配的酒店列表或空列表。"
+    )
 
     def _run(self, min_price: int, max_price: int, date: str = None):
-        # 调用你现有的 /hotels 端点逻辑
+        # 执行搜索
         results = [h for h in fake_db if min_price <= h["price"] <= max_price]
         if date:
             results = [h for h in results if h["date"] == date]
-        return json.dumps(results)
+
+        # 返回结构化结果
+        return {
+            "match_criteria": {
+                "min_price": min_price,
+                "max_price": max_price,
+                "date": date
+            },
+            "result_count": len(results),
+            "results": results
+        }
+
 
 
 # 创建带工具的代理
 def create_complaint_agent():
-    tools = [
-        Tool(
-            name="Hotel Search",
-            func=HotelSearchTool(),
-            description="查询可用的酒店房间"
-        )
-    ]
+    # 使用工具实例而不是Tool包装器
+    tools = [HotelSearchTool()]
 
+    # 使用适合多参数的结构化代理
     agent = initialize_agent(
         tools,
         llm,
-        agent="zero-shot-react-description",
-        verbose=True
+        agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
+        verbose=True,
+        handle_parsing_errors=True,  # 处理参数解析错误
+        max_iterations=3,  # 限制最大对话轮数
+        early_stopping_method = "generate"  # 当无法解析时直接生成回复
     )
 
     return agent
 
+
+# 使用代理处理复杂请求
+def handle_complex_request(user_query: str):
+    try:
+        agent = create_complaint_agent()
+        return agent.run(user_query)
+    except Exception as e:
+        # 记录详细错误信息
+        error_details = f"代理执行错误: {str(e)}\n"
+
+        # 添加额外的调试信息
+        error_details += f"查询内容: '{user_query}'\n"
+        error_details += f"代理类型: {type(agent).__name__}\n"
+
+        # 抛出包含详细信息的HTTP异常
+        raise HTTPException(
+            status_code=500,
+            detail=error_details
+        )
 
 # 使用代理处理复杂请求
 def handle_complex_request(user_query: str):
