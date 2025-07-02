@@ -102,6 +102,7 @@ def handle_complaint_with_qianfan(user_message: str):
                     2. 提供即时解决方案（换房或合理补偿）
                     3. 避免使用"系统问题"等推脱表述
                     4. 回复长度不超过80字
+                    5.当用户咨询周边景点时，使用景点推荐工具
                     禁用词：不可能/没办法/规定
                     """
         )
@@ -143,6 +144,7 @@ def handle_complaint_with_memory(user_message: str,conversation_id:str):
         2. 提供即时解决方案（换房或合理补偿）
         3. 避免使用"系统问题"等推脱表述
         4. 回复长度不超过80字
+        5.当用户咨询周边景点时，使用景点推荐工具
         禁用词：不可能/没办法/规定
         
         """
@@ -160,6 +162,25 @@ def handle_complaint_with_memory(user_message: str,conversation_id:str):
 
 from langchain.agents import Tool, initialize_agent
 from langchain.tools import BaseTool
+
+
+class AttractionRecommendTool(BaseTool):
+    name:str = "attraction_recommend"
+    description:str = "推荐酒店周边的景点，参数为范围半径（整数公里数）"
+
+    def _run(self, radius: int):
+        # 模拟景点数据
+        attractions = [
+            {"name": "故宫", "distance": "1.2km", "type": "文化遗址"},
+            {"name": "颐和园", "distance": "8.5km", "type": "皇家园林"},
+            {"name": "798艺术区", "distance": "12km", "type": "艺术展览"}
+        ]
+        # 根据半径过滤
+        filtered = [a for a in attractions if float(a["distance"].replace("km", "")) <= radius]
+        return {
+            "radius_km": radius,
+            "attractions": filtered
+        }
 
 
 # 优化后的酒店查询工具
@@ -193,7 +214,9 @@ class HotelSearchTool(BaseTool):
 # 创建带工具的代理
 def create_complaint_agent():
     # 使用工具实例而不是Tool包装器
-    tools = [HotelSearchTool()]
+    tools = [HotelSearchTool(),
+             AttractionRecommendTool(),
+             ]
 
     callbacks = [ConsoleCallbackHandler()]
     # 使用适合多参数的结构化代理
@@ -304,3 +327,27 @@ async def test_qianfan_connection():
         return {"status": "success", "message": "千帆API连接正常", "response": ai_reply}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+
+@app.get("/test_attraction_agent")
+async def test_attraction_agent():
+    """测试景点推荐功能"""
+    test_cases = [
+        "我入住的酒店附近有什么好玩的地方？",
+        "推荐一下酒店周边的景点",
+        "酒店5公里内有什么可以逛的？"
+    ]
+
+    results = {}
+    for query in test_cases:
+        results[query] = handle_complex_request(query)
+
+    return {"test_results": results}
+
+"""直接工具调用完全绕开代理系统
+❌ 不测试语言理解能力
+✅ 可被其他系统程序化调用"""
+@app.post("/attraction_recommend")
+async def recommend_attractions(radius: int = 5):
+    tool = AttractionRecommendTool()
+    return tool.run(radius)
