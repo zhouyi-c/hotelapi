@@ -13,6 +13,7 @@ from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.agents import Tool, initialize_agent, AgentType
 from langchain.tools import BaseTool
+from langchain.callbacks.base import BaseCallbackHandler  # 添加回调处理器导入
 
 # 创建酒店查询工具
 import json
@@ -24,6 +25,27 @@ class HotelQuery(BaseModel):
     max_price: conint(le=10000) = 1000
     date: Optional[date] = None
 
+
+# 新增回调处理器类定义
+class ConsoleCallbackHandler(BaseCallbackHandler):
+    """自定义回调处理器，用于打印Agent内部决策过程"""
+
+    def on_agent_action(self, action, **kwargs):
+        # 当Agent选择工具时触发
+        print(f"\n[Agent决策] 选择工具: {action.tool}")
+        print(f"[参数输入] {action.tool_input}")
+
+    def on_agent_finish(self, finish, **kwargs):
+        # 当Agent完成执行时触发
+        print(f"\n[Agent完成] 最终输出: {finish.return_values['output']}")
+
+    def on_tool_start(self, serialized, input_str, **kwargs):
+        # 当工具开始执行时触发
+        print(f"\n[工具执行] 开始: {serialized.get('name')} | 输入: {input_str}")
+
+    def on_tool_end(self, output, **kwargs):
+        # 当工具执行完成时触发
+        print(f"[工具结果] 输出: {output}")
 
 # 这行代码会加载.env文件中的变量
 
@@ -173,6 +195,7 @@ def create_complaint_agent():
     # 使用工具实例而不是Tool包装器
     tools = [HotelSearchTool()]
 
+    callbacks = [ConsoleCallbackHandler()]
     # 使用适合多参数的结构化代理
     agent = initialize_agent(
         tools,
@@ -181,7 +204,8 @@ def create_complaint_agent():
         verbose=True,
         handle_parsing_errors=True,  # 处理参数解析错误
         max_iterations=3,  # 限制最大对话轮数
-        early_stopping_method = "generate"  # 当无法解析时直接生成回复
+        early_stopping_method = "generate" , # 当无法解析时直接生成回复
+        callbacks=callbacks,
     )
 
     return agent
