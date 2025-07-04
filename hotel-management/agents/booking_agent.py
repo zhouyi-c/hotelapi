@@ -13,8 +13,7 @@ class BookingAgent(BaseAgent):
         tools = [HotelSearchTool()]
         prompt = get_booking_prompt()
         memory = create_buffer_memory(conversation_id)
-        super().__init__(tools)
-        self.prompt = prompt
+        super().__init__(tools, prompt=prompt)
         self.memory = memory
 
     def handle_booking(self, user_message: str, conversation_id: str = "default") -> str:
@@ -26,4 +25,4 @@ class BookingAgent(BaseAgent):
         """
         if conversation_id != "default":
             self.memory = create_buffer_memory(conversation_id)
-        return self.run(input=user_message, prompt=self.prompt, memory=self.memory)
+        return self.run(input=user_message, memory=self.memory)

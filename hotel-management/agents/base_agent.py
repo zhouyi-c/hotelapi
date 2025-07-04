@@ -5,7 +5,7 @@ from utils.callback import ConsoleCallbackHandler
 
 
 class BaseAgent:
-    def __init__(self, tools, agent_type=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION):
+    def __init__(self, tools, prompt=None, agent_type=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION):
         self.llm = ChatOpenAI(
             api_key=Config.QIANFAN_API_KEY,
             base_url=Config.QIANFAN_BASE_URL,
@@ -13,9 +13,9 @@ class BaseAgent:
             temperature=0.7
         )
 
-        self.agent = initialize_agent(
-            tools,
-            self.llm,
+        ia_kwargs = dict(
+            tools=tools,
+            llm=self.llm,
             agent=agent_type,
             verbose=True,
             handle_parsing_errors=True,
@@ -23,6 +23,9 @@ class BaseAgent:
             early_stopping_method="generate",
             callbacks=[ConsoleCallbackHandler()]
         )
+        if prompt is not None:
+            ia_kwargs['prompt'] = prompt
+        self.agent = initialize_agent(**ia_kwargs)
 
     def run(self, query: str = None, **kwargs):
         """
