@@ -1,5 +1,15 @@
 from fastapi import HTTPException
 from models.hotel_model import get_hotels
+from pydantic import BaseModel
+
+# 未来可切换为数据库ORM查询
+
+class HotelRoom(BaseModel):
+    id: int
+    hotel_id: int
+    room_type: str
+    price: int
+    date: str
 
 def get_hotels_data(min_price: int, max_price: int, date: str = None):
     """
@@ -14,3 +24,12 @@ def get_hotels_data(min_price: int, max_price: int, date: str = None):
     if date:
         results = [h for h in results if h["date"] == date]
     return {"hotels": results}
+
+def get_hotel_rooms(hotel_id: int):
+    """
+    获取酒店房间数据
+    :param hotel_id: 酒店ID
+    :return: 酒店房间列表
+    """
+    # TODO: 实现酒店房间数据查询
+    pass
