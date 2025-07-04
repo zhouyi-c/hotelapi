@@ -1,30 +1,23 @@
 from fastapi import APIRouter
 from services.complaint_service import handle_complaint_basic, handle_complaint_with_agent
-from models.schemas import ComplaintRequest
 
 # 创建API路由器
 router = APIRouter()
 
-# 基础投诉处理API
-@router.post("/basic")
-async def basic_complaint(request: ComplaintRequest):
+# 投诉处理API
+@router.post("/complaint")
+async def complaint_service(user_message: str, conversation_id: str = "default"):
     """
-    基础投诉处理API
-    参数：
-        request: ComplaintRequest，包含message字段
-    返回：AI回复（dict）
+    投诉处理接口
+    :param user_message: 用户投诉内容
+    :param conversation_id: 对话唯一标识（用于记忆）
+    :return: 智能回复文本
     """
-    # 只做参数校验和Service调用，不含业务逻辑
-    return {"ai_reply": handle_complaint_basic(request.message)}
+    agent = ComplaintAgent(conversation_id)
+    return {"ai_reply": agent.handle_complaint(user_message)}
 
-# 基于Agent的复杂投诉处理API
-@router.post("/agent")
-async def agent_complaint(request: ComplaintRequest):
-    """
-    基于Agent的复杂投诉处理API
-    参数：
-        request: ComplaintRequest，包含message字段
-    返回：AI回复（dict）
-    """
-    # 只做参数校验和Service调用，不含业务逻辑
-    return {"ai_reply": handle_complaint_with_agent(request.message)}
+# 测试接口
+@router.get("/test_complaint")
+async def test_complaint():
+    agent = ComplaintAgent("test_complaint")
+    return {"ai_reply": agent.handle_complaint("房间不干净，怎么处理？")}

@@ -24,5 +24,14 @@ class BaseAgent:
             callbacks=[ConsoleCallbackHandler()]
         )
 
-    def run(self, query: str):
-        return self.agent.run(query)
+    def run(self, query: str = None, **kwargs):
+        """
+        支持传递prompt、memory等参数，自动适配langchain新版API。
+        - 仅有query时，直接传递query。
+        - 若有prompt、memory等参数，则全部用kwargs传递。
+        """
+        if kwargs:
+            # 只用关键词参数（如prompt、memory等），不混用位置参数
+            return self.agent.run(**kwargs)
+        else:
+            return self.agent.run(query)

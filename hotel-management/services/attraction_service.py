@@ -1,12 +1,12 @@
 from tools.attraction_tool import AttractionRecommendTool
 
-def recommend_attractions(radius: int) -> dict:
+from tools.attraction_tool import AttractionRecommendTool
+
+def get_attractions_data(radius: int) -> dict:
     """
-    景点推荐服务：根据半径推荐酒店周边景点。
-    建议仅作为业务调度层，将具体推荐逻辑下沉到工具或Agent层。
-    :param radius: 半径（int，公里）
-    :return: dict，包含推荐景点
+    仅做底层景点数据查询，供Agent和Tool调用。
+    :param radius: 半径（公里）
+    :return: 景点列表dict
     """
     tool = AttractionRecommendTool()
     return tool._run(radius)
-    return tool.run(radius)
