@@ -8,15 +8,14 @@ router = APIRouter()
 @router.get("/test_complaint")
 async def test_complaint():
     agent = ComplaintAgent("test_complaint")
-    return {"ai_reply": agent.handle_complaint("为什么房间内有蟑螂？我要投诉你们")}
+    return {"ai_reply": agent.handle_complaint("为什么房间内有蟑螂？我要投诉你们", conversation_id="test_complaint")}
 
 @router.get("/test_consult")
 async def test_consult():
     agent = ConsultAgent("test_consult")
-    return {"ai_reply": agent.handle_consult("附近有什么好玩的景点？")}
+    return {"ai_reply": agent.handle_consult("附近有什么好玩的景点？", conversation_id="test_consult")}
 
 @router.get("/test_booking")
 async def test_booking():
     agent = BookingAgent("test_booking")
-    return {"ai_reply": agent.handle_booking("我要预订明天的大床房")}
-    return recommend_attractions(5)
+    return {"ai_reply": agent.handle_booking("我要预订明天的大床房", conversation_id="test_booking")}
