@@ -1,6 +1,7 @@
 from fastapi import HTTPException
-from models.hotel_model import get_hotels
+from models.hotel_model import get_hotels, search_rooms, book_room, change_room
 from pydantic import BaseModel
+from typing import Optional
 
 # 未来可切换为数据库ORM查询
 
@@ -10,26 +11,38 @@ class HotelRoom(BaseModel):
     room_type: str
     price: int
     date: str
+    available: bool
 
+# 获取所有酒店及其房间简要信息
 def get_hotels_data(min_price: int, max_price: int, date: str = None):
     """
-    仅做底层酒店数据查询，供Agent和Tool调用。
-    :param min_price: 最低价
-    :param max_price: 最高价
-    :param date: 可选，入住日期
-    :return: 酒店列表dict
+    查询所有酒店下满足条件的可用房间。
     """
-    hotels = [h.to_dict() for h in get_hotels()]
-    results = [h for h in hotels if min_price <= h["price"] <= max_price]
-    if date:
-        results = [h for h in results if h["date"] == date]
-    return {"hotels": results}
+    hotels = get_hotels()
+    data = []
+    for hotel in hotels:
+        rooms = [r for r in hotel.rooms if r.available and min_price <= r.price <= max_price]
+        if date:
+            rooms = [r for r in rooms if r.date == date]
+        if rooms:
+            data.append({
+                "hotel_id": hotel.id,
+                "hotel_name": hotel.name,
+                "rooms": [r.to_dict() for r in rooms]
+            })
+    return {"hotels": data}
 
-def get_hotel_rooms(hotel_id: int):
-    """
-    获取酒店房间数据
-    :param hotel_id: 酒店ID
-    :return: 酒店房间列表
-    """
-    # TODO: 实现酒店房间数据查询
-    pass
+# 获取某酒店所有可用房间
+def get_hotel_rooms(hotel_id: int, min_price: int = 0, max_price: int = 10000, date: Optional[str] = None):
+    rooms = search_rooms(min_price, max_price, date, hotel_id=hotel_id)
+    return [r.to_dict() for r in rooms]
+
+# 预订房间
+def book_room_service(room_id: int) -> Optional[dict]:
+    room = book_room(room_id)
+    return room.to_dict() if room else None
+
+# 换房服务
+def change_room_service(current_room_id: int) -> Optional[dict]:
+    room = change_room(current_room_id)
+    return room.to_dict() if room else None

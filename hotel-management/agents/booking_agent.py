@@ -19,10 +19,12 @@ class BookingAgent(BaseAgent):
     def handle_booking(self, user_message: str, conversation_id: str = "default") -> str:
         """
         处理预订主流程，自动注入Prompt和历史记忆。
+        支持自动分配可用房间，并返回详细房间数据。
         :param user_message: 用户预订请求内容
         :param conversation_id: 会话ID
         :return: 智能回复文本
         """
         if conversation_id != "default":
             self.memory = create_buffer_memory(conversation_id)
+        # 可扩展：解析user_message提取需求，自动调用book_room_service
         return self.run(input=user_message, memory=self.memory)
