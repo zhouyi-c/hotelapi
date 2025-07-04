@@ -20,6 +20,10 @@ import json
 from datetime import date
 from typing import Any, Dict, Optional
 
+""" 
+，类是用来创建一个酒店查询对象的模板，其中包含价格范围和日期的信息，并且通过Pydantic提供的功能确保了这些信息的有效性 `HotelQuery`
+
+"""
 class HotelQuery(BaseModel):
     min_price: conint(ge=0) = 0
     max_price: conint(le=10000) = 1000
@@ -76,16 +80,6 @@ fake_db = [
     {"id": 1, "name": "四季酒店", "price": 800, "date": "2025-07-10"},
     {"id": 2, "name": "如家快捷", "price": 200, "date": "2025-07-12"}
 ]
-
-
-# 酒店查询接口（保持不变）
-@app.get("/hotels")
-async def filter_hotels(min_price: int = 0, max_price: int = 1000, date: str = None):
-    """根据价格和日期过滤酒店"""
-    results = [h for h in fake_db if min_price <= h["price"] <= max_price]
-    if date:
-        results = [h for h in results if h["date"] == date]
-    return {"hotels": results}
 
 
 
@@ -210,27 +204,24 @@ class HotelSearchTool(BaseTool):
         }
 
 
-
-# 创建带工具的代理
 def create_complaint_agent():
-    # 使用工具实例而不是Tool包装器
-    tools = [HotelSearchTool(),
-             AttractionRecommendTool(),
-             ]
+    # 装载工具包
+    tools = [
+        HotelSearchTool(),  # 酒店查询工具
+        AttractionRecommendTool()  # 景点推荐工具
+    ]
 
-    callbacks = [ConsoleCallbackHandler()]
-    # 使用适合多参数的结构化代理
+    # 创建代理核心引擎
     agent = initialize_agent(
-        tools,
-        llm,
-        agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
-        verbose=True,
-        handle_parsing_errors=True,  # 处理参数解析错误
-        max_iterations=3,  # 限制最大对话轮数
-        early_stopping_method = "generate" , # 当无法解析时直接生成回复
-        callbacks=callbacks,
+        tools,  # 传入工具包
+        llm,  # 大模型引擎（千帆ERNIE）
+        agent=AgentType.STRUCTURURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,  # 代理工作模式
+        verbose=True,  # 开启详细日志
+        handle_parsing_errors=True,  # 错误时自动修复
+        max_iterations=3,  # 最多思考3轮
+        early_stopping_method="generate",  # 卡住时直接生成回复
+        callbacks=[ConsoleCallbackHandler()]  # 日志回调
     )
-
     return agent
 
 
@@ -252,11 +243,6 @@ def handle_complex_request(user_query: str):
             status_code=500,
             detail=error_details
         )
-
-# 使用代理处理复杂请求
-def handle_complex_request(user_query: str):
-    agent = create_complaint_agent()
-    return agent.run(user_query)
 
 # API端点
 @app.post("/handle_complaint")
@@ -294,14 +280,6 @@ async def complex_query(user_query: str):
         return {"error": str(e)}
 
 
-# 测试路由
-@app.get("/test_prompt")
-async def test_prompt():
-    """测试CRISPE提示词效果"""
-    test_message = "你们欺诈消费者！我要曝光你们！"
-    # 使用基本处理函数
-    return {"ai_reply": handle_complaint_with_qianfan(test_message)}
-
 @app.get("/test_memory")
 async def test_memory():
     """测试记忆功能"""
@@ -317,16 +295,6 @@ async def test_agent():
     response = handle_complex_request("帮我找300-500元之间的酒店")
     return {"response": response}
 
-# 测试千帆API连接（更新测试）
-@app.get("/test_qianfan_connection")
-async def test_qianfan_connection():
-    """测试千帆API连接"""
-    try:
-        test_message = "测试连接"
-        ai_reply = handle_complaint_with_qianfan(test_message)
-        return {"status": "success", "message": "千帆API连接正常", "response": ai_reply}
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
 
 
 @app.get("/test_attraction_agent")
