@@ -1,5 +1,5 @@
 # 接口层 UserProxyAgent：统一入口，负责接收用户请求、初步解析、转发给ManagerAgent
-from agents.manager_agent import ManagerAgent
+from .manager_agent import ManagerAgent
 
 class UserProxyAgent:
     def __init__(self):

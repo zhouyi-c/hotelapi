@@ -1,4 +1,4 @@
-from agents.base_agent import BaseAgent
+from .base_agent import BaseAgent
 from tools.hotel_tool import HotelSearchTool
 
 from utils.prompts import get_booking_prompt
