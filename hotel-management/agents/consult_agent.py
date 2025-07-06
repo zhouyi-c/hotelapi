@@ -3,6 +3,7 @@ from agents.base_agent import BaseAgent
 from langchain.agents import AgentType
 from tools.hotel_tool import HotelSearchTool
 from tools.attraction_tool import AttractionRecommendTool
+from  tools.knowledge_tool import KnowledgeBaseTool
 from utils.prompts import get_consult_prompt
 from utils.memory import create_buffer_memory
 from langchain.callbacks.stdout import StdOutCallbackHandler  # 添加标准输出回调
@@ -15,7 +16,7 @@ class ConsultAgent(BaseAgent):
     """
 
     def __init__(self, conversation_id: str = "default"):
-        tools = [HotelSearchTool(), AttractionRecommendTool()]
+        tools = [HotelSearchTool(), AttractionRecommendTool(),KnowledgeBaseTool()]
         prompt = get_consult_prompt()
         memory = create_buffer_memory(conversation_id)
 

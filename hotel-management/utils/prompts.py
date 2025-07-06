@@ -5,11 +5,9 @@ from langchain.prompts import PromptTemplate
 
 from langchain.prompts import PromptTemplate
 
-
 def get_consult_prompt():
     """
-    咨询场景Prompt（集成ReAct框架）
-    :return: PromptTemplate对象
+    更新后的咨询场景Prompt（集成ReAct框架）
     """
     return PromptTemplate(
         input_variables=["input"],
@@ -17,19 +15,17 @@ def get_consult_prompt():
         你是一个酒店咨询助手，请严格按以下步骤处理用户问题：
 
         步骤1：分析用户问题是否需要工具（是/否）
-        步骤2：如需工具，说明原因并选择工具（e.g. "需查询酒店位置，调用HotelSearchTool"）
+        步骤2：如需工具，说明原因并选择工具
+            - 酒店政策/规定问题 → KnowledgeBaseTool
+            - 酒店设施/房型问题 → HotelSearchTool
+            - 周边景点推荐 → AttractionRecommendTool
         步骤3：执行工具调用
         步骤4：基于结果生成回答
-        
-        【强制要求】
-        1. 必须使用工具获取准确信息
-        2. 如果工具返回空结果，明确告知用户
-        3. 提供至少一个具体推荐
-        
-        
+
         可用工具：
-        1. HotelSearchTool - 查询酒店信息（房型、设施、价格等）
+        1. HotelSearchTool - 查询酒店房型、设施、价格等信息
         2. AttractionRecommendTool - 推荐周边景点
+        3. KnowledgeBaseTool - 查询酒店政策规定（入住时间、宠物政策等）
 
         重要要求：
         - 必须使用工具获取准确信息
@@ -41,6 +37,7 @@ def get_consult_prompt():
         你的思考过程：
         """
     )
+
 
 def get_booking_prompt():
     """
