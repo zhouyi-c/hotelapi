@@ -17,14 +17,29 @@ class BookingAgent(BaseAgent):
         self.memory = memory
 
     def handle_booking(self, user_message: str, conversation_id: str = "default") -> str:
-        """
-        处理预订主流程，自动注入Prompt和历史记忆。
-        支持自动分配可用房间，并返回详细房间数据。
-        :param user_message: 用户预订请求内容
-        :param conversation_id: 会话ID
-        :return: 智能回复文本
-        """
         if conversation_id != "default":
             self.memory = create_buffer_memory(conversation_id)
-        # 可扩展：解析user_message提取需求，自动调用book_room_service
-        return self.run(input=user_message, memory=self.memory)
+
+        # 添加预订核心逻辑
+        try:
+            # 解析用户请求
+            if "豪华大床房" in user_message:
+                room_type = "豪华大床房"
+            elif "商务套房" in user_message:
+                room_type = "商务套房"
+            else:
+                room_type = None
+
+            # 调用工具获取房间信息
+            rooms = HotelSearchTool().run(f"房型={room_type}")
+
+            if rooms:
+                # 提取第一个可用房间
+                room = rooms[0]
+                return (f"找到可用房间：{room['room_type']}，价格：{room['price']}元/晚。"
+                        f"是否为您预订？")
+            else:
+                return "抱歉，目前没有符合要求的可用房间。需要帮您查询其他日期吗？"
+
+        except Exception as e:
+            return self.run(input=user_message, memory=self.memory)

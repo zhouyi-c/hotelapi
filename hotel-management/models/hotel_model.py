@@ -36,6 +36,8 @@ class Hotel:
 # 静态模拟数据（可扩展为数据库）
 _hotels = [
     Hotel(1, "四季酒店", [
+        Room(101, 1, "豪华大床房", 1000, "2025-07-15", True),  # 新增
+        Room(102, 1, "商务套房", 1500, "2025-07-15", True),  # 新增
         Room(101, 1, "大床房", 800, "2025-07-10", True),
         Room(102, 1, "双床房", 850, "2025-07-10", True),
         Room(103, 1, "豪华套房", 1200, "2025-07-10", True)
@@ -52,8 +54,9 @@ def get_hotels():
     return [Hotel(h.id, h.name, copy.deepcopy(h.rooms)) for h in _hotels]
 
 # 按条件检索可用房间
-def search_rooms(min_price: int, max_price: int, date: Optional[str] = None, hotel_id: Optional[int] = None, room_type: Optional[str] = None):
-    # 先查完全匹配
+def search_rooms(min_price: int, max_price: int, date: Optional[str] = None,
+                hotel_id: Optional[int] = None, room_type: Optional[str] = None):
+    # 移除严格的日期匹配
     rooms = []
     for hotel in _hotels:
         if hotel_id and hotel.id != hotel_id:
@@ -62,29 +65,11 @@ def search_rooms(min_price: int, max_price: int, date: Optional[str] = None, hot
             if not room.available:
                 continue
             if min_price <= room.price <= max_price:
-                if date and room.date != date:
-                    continue
+                # 移除日期检查
                 if room_type and room.room_type != room_type:
                     continue
                 rooms.append(room)
-    if rooms:
-        return rooms
-    # 若无完全匹配，推荐其它日期的同价位房间
-    fallback_rooms = []
-    for hotel in _hotels:
-        if hotel_id and hotel.id != hotel_id:
-            continue
-        for room in hotel.rooms:
-            if not room.available:
-                continue
-            if min_price <= room.price <= max_price:
-                if room_type and room.room_type != room_type:
-                    continue
-                fallback_rooms.append(room)
-    # 给推荐房间打上推荐标签（可在to_dict中扩展）
-    for room in fallback_rooms:
-        room.recommend_reason = "推荐：其它日期可用房间"
-    return fallback_rooms
+    return rooms
 
 # 预订房间（将房间状态置为不可用）
 def book_room(room_id: int) -> Optional[Room]:

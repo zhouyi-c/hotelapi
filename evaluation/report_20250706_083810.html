@@ -1,0 +1,103 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>客服Agent评估报告</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .case { border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; }
+            .excellent { background-color: #e6ffe6; }
+            .qualified { background-color: #ffffe6; }
+            .unqualified { background-color: #ffe6e6; }
+            .rating { font-weight: bold; margin-bottom: 10px; }
+            table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+        </style>
+    </head>
+    <body>
+        <h1>客服Agent评估报告</h1>
+        <p>生成时间: 2025-07-06 08:38:10</p>
+
+        <h2>概览统计</h2>
+        <div id="summary"></div>
+
+        <h2>详细结果</h2>
+        <div id="details"></div>
+
+        <script>
+            const reportData = [{"test_id": "complaint-001", "category": "\u6295\u8bc9", "difficulty": "\u4e2d\u7b49", "user_input": "\u623f\u95f4\u536b\u751f\u6781\u5dee\uff0c\u5e8a\u5355\u6709\u6c61\u6e0d\uff0c\u8981\u6c42\u7acb\u5373\u5904\u7406", "ideal_output": "\u975e\u5e38\u62b1\u6b49\u7ed9\u60a8\u5e26\u6765\u4e0d\u4fbf\uff01\u6211\u4eec\u5df2\u5b89\u6392\u623f\u52a1\u7ecf\u7406\u5e26\u65b0\u5e8a\u5355\u524d\u5f80\u60a8\u623f\u95f4\uff0c15\u5206\u949f\u5185\u89e3\u51b3\u3002\u4e3a\u8868\u6b49\u610f\uff0c\u8d60\u9001\u60a8\u53cc\u4eba\u81ea\u52a9\u665a\u9910\u5238\u3002", "agent_response": "\u6211\u4eec\u5df2\u7ecf\u4e86\u89e3\u5230\u60a8\u7684\u6295\u8bc9\uff0c\u5e76\u6df1\u8868\u6b49\u610f\u3002\u9152\u5e97\u5c06\u7acb\u5373\u4e3a\u60a8\u66f4\u6362\u5e72\u51c0\u7684\u5e8a\u5355\uff0c\u5e76\u5bf9\u623f\u95f4\u8fdb\u884c\u5168\u9762\u7684\u6e05\u6d01\u5de5\u4f5c\u3002\u540c\u65f6\uff0c\u6211\u4eec\u4f1a\u8c03\u67e5\u6b64\u6b21\u536b\u751f\u95ee\u9898\u51fa\u73b0\u7684\u539f\u56e0\uff0c\u4ee5\u786e\u4fdd\u4eca\u540e\u4e0d\u518d\u53d1\u751f\u7c7b\u4f3c\u60c5\u51b5\u3002\u611f\u8c22\u60a8\u7684\u53cd\u9988\u548c\u7406\u89e3\u3002", "evaluation": {"rating": "\u5408\u683c", "reason": "\u5f85\u8bc4\u4f30\u56de\u590d\u57fa\u672c\u6ee1\u8db3\u8981\u6c42\uff0c\u4f46\u672a\u63d0\u53ca\u8865\u507f\u63aa\u65bd\u3002", "dimension_scores": {"professionalism": 8, "problem_solving": 7, "tone": 9, "compliance": 8}}}, {"test_id": "complaint-002", "category": "\u6295\u8bc9", "difficulty": "\u7b80\u5355", "user_input": "\u51cc\u66683\u70b9\u9694\u58c1\u623f\u95f4\u5435\u95f9\u65e0\u6cd5\u5165\u7761", "ideal_output": "\u4e07\u5206\u62b1\u6b49\u5f71\u54cd\u60a8\u4f11\u606f\uff01\u6211\u4eec\u5df2\u5b89\u6392\u60a8\u5165\u4f4f\u5b89\u9759\u623f\u95f4\uff08\u623f\u53f71502\uff09\uff0c\u660e\u65e5\u65e9\u9910\u514d\u8d39\uff0c\u9700\u8981\u73b0\u5728\u5e26\u60a8\u8fc7\u53bb\u5417\uff1f", "agent_response": "\u82e5\u51cc\u66683\u70b9\u9694\u58c1\u623f\u95f4\u5435\u95f9\u65e0\u6cd5\u5165\u7761\uff0c\u60a8\u53ef\u4ee5\u5148\u5c1d\u8bd5\u793c\u8c8c\u5730\u63d0\u9192\u9694\u58c1\u964d\u4f4e\u97f3\u91cf\u3002\u5982\u65e0\u6548\uff0c\u53ef\u8054\u7cfb\u7ba1\u7406\u4eba\u5458\u534f\u52a9\u89e3\u51b3\u3002\u8fd8\u53ef\u4ee5\u4f7f\u7528\u8033\u585e\u7b49\u52a9\u7720\u5de5\u5177\u6765\u5e2e\u52a9\u5165\u7761\u3002", "evaluation": {"rating": "\u5408\u683c", "reason": "\u5f85\u8bc4\u4f30\u56de\u590d\u63d0\u4f9b\u4e86\u89e3\u51b3\u65b9\u6848\uff0c\u4f46\u672a\u80fd\u5145\u5206\u6ee1\u8db3\u7528\u6237\u7684\u5373\u65f6\u9700\u6c42\u3002", "dimension_scores": {"professionalism": 7, "problem_solving": 6, "tone": 8, "compliance": 8}}}, {"test_id": "consult-001", "category": "\u54a8\u8be2", "difficulty": "\u7b80\u5355", "user_input": "\u5546\u52a1\u5957\u623f\u6709\u4f1a\u8bae\u5ba4\u5417\uff1f\u80fd\u5bb9\u7eb3\u591a\u5c11\u4eba\uff1f", "ideal_output": "\u5546\u52a1\u5957\u623f\u914d\u590720\u33a1\u4f1a\u8bae\u5ba4\uff0c\u914d\u5907\u6295\u5f71\u4eea\u548c\u7535\u8bdd\u4f1a\u8bae\u8bbe\u5907\uff0c\u6700\u591a\u5bb9\u7eb38\u4eba\u3002\u9700\u8981\u4e3a\u60a8\u9884\u7559\u5417\uff1f", "agent_response": "\u5546\u52a1\u5957\u623f\u662f\u5426\u914d\u5907\u4f1a\u8bae\u5ba4\u4ee5\u53ca\u80fd\u5bb9\u7eb3\u591a\u5c11\u4eba\uff0c\u8fd9\u53d6\u51b3\u4e8e\u5177\u4f53\u9152\u5e97\u7684\u8bbe\u65bd\u548c\u5957\u623f\u7c7b\u578b\u3002\u5efa\u8bae\u60a8\u76f4\u63a5\u8054\u7cfb\u9152\u5e97\u6216\u67e5\u770b\u5176\u5b98\u7f51\u4ee5\u83b7\u53d6\u51c6\u786e\u4fe1\u606f\u3002", "evaluation": {"rating": "\u4e0d\u5408\u683c", "reason": "\u672a\u76f4\u63a5\u56de\u7b54\u7528\u6237\u95ee\u9898\uff0c\u7f3a\u4e4f\u5177\u4f53\u4fe1\u606f\u3002", "dimension_scores": {"professionalism": 5, "problem_solving": 3, "tone": 7, "compliance": 7}}}, {"test_id": "consult-002", "category": "\u54a8\u8be2", "difficulty": "\u4e2d\u7b49", "user_input": "\u9644\u8fd1\u6709\u4ec0\u4e48\u8bc4\u4ef7\u597d\u7684\u6d77\u9c9c\u9910\u5385\uff1f", "ideal_output": "\u4e3a\u60a8\u63a8\u8350\u4e09\u5bb6\u9ad8\u8bc4\u5206\u6d77\u9c9c\u9910\u5385\uff1a1. \u6d77\u6e2f\u57ce\u6d77\u9c9c\u9152\u5bb6(800\u7c73,4.7\u2605) 2. \u6e14\u4eba\u7801\u5934(1.2\u516c\u91cc,4.6\u2605) 3. \u6d77\u4e4b\u5473\u9910\u5385(900\u7c73,4.5\u2605)", "agent_response": "\u60a8\u53ef\u4ee5\u901a\u8fc7\u641c\u7d22\u5f15\u64ce\u6216\u624b\u673a\u5e94\u7528\u67e5\u627e\u201c\u9644\u8fd1\u7684\u6d77\u9c9c\u9910\u5385\u201d\uff0c\u5e76\u67e5\u770b\u7528\u6237\u8bc4\u4ef7\u3001\u8bc4\u5206\u548c\u8bc4\u8bba\u6765\u4e86\u89e3\u9910\u5385\u7684\u53e3\u7891\u548c\u8d28\u91cf\u3002\u53e6\u5916\uff0c\u5411\u5f53\u5730\u5c45\u6c11\u6216\u670b\u53cb\u5bfb\u6c42\u63a8\u8350\u4e5f\u662f\u4e00\u4e2a\u4e0d\u9519\u7684\u9009\u62e9\uff0c\u4ed6\u4eec\u53ef\u80fd\u66f4\u4e86\u89e3\u5f53\u5730\u7684\u7f8e\u98df\u60c5\u51b5\u3002\u8fd9\u6837\uff0c\u60a8\u5c31\u80fd\u627e\u5230\u9644\u8fd1\u8bc4\u4ef7\u597d\u7684\u6d77\u9c9c\u9910\u5385\u4e86\u3002", "evaluation": {"rating": "\u4e0d\u5408\u683c", "reason": "\u672a\u76f4\u63a5\u56de\u7b54\u95ee\u9898\uff0c\u7f3a\u4e4f\u5177\u4f53\u63a8\u8350\u4fe1\u606f\u3002", "dimension_scores": {"professionalism": 5, "problem_solving": 2, "tone": 8, "compliance": 7}}}, {"test_id": "booking-001", "category": "\u9884\u8ba2", "difficulty": "\u7b80\u5355", "user_input": "\u6211\u60f3\u8ba2\u4e24\u665a\u8c6a\u534e\u5927\u5e8a\u623f\uff0c\u4e0b\u5468\u5165\u4f4f", "ideal_output": "\u8c6a\u534e\u5927\u5e8a\u623f\u4e0b\u5468\u53ef\u8ba2\uff0c\u4ef7\u683c\u4e3a\u6bcf\u665a1200\u5143\u3002\u8bf7\u63d0\u4f9b\u5165\u4f4f\u65e5\u671f\u548c\u4f1a\u5458\u53f7\uff08\u5982\u6709\uff09\uff0c\u6211\u4e3a\u60a8\u5b8c\u6210\u9884\u8ba2\u3002", "agent_response": "\u6839\u636e\u60a8\u7684\u9700\u6c42\uff0c\u63a8\u8350\u60a8\u5165\u4f4f\u56db\u5b63\u9152\u5e97\u7684\u8c6a\u534e\u5927\u5e8a\u623f\uff0c\u4ef7\u683c\u4e3a1000\u5143\u3002\u8be5\u623f\u578b\u5728\u60a8\u7684\u5165\u4f4f\u671f\u95f4\u6709\u53ef\u7528\u623f\u95f4\u3002\u5982\u679c\u60a8\u9700\u8981\u8fdb\u4e00\u6b65\u64cd\u4f5c\u6216\u6709\u5176\u4ed6\u95ee\u9898\uff0c\u8bf7\u968f\u65f6\u544a\u8bc9\u6211\u3002", "evaluation": {"rating": "\u5408\u683c", "reason": "\u5f85\u8bc4\u4f30\u56de\u590d\u89e3\u51b3\u4e86\u7528\u6237\u7684\u6838\u5fc3\u8bc9\u6c42\uff0c\u4f46\u4ef7\u683c\u4fe1\u606f\u4e0e\u7406\u60f3\u56de\u590d\u4e0d\u7b26\u3002", "dimension_scores": {"professionalism": 7, "problem_solving": 8, "tone": 8, "compliance": 7}}}, {"test_id": "edge-001", "category": "\u8fb9\u754c", "difficulty": "\u56f0\u96be", "user_input": "\u4f60\u4eec\u9152\u5e97\u592a\u5dee\u4e86\uff0c\u6211\u8981\u8d77\u8bc9\u4f60\u4eec\uff01", "ideal_output": "\u975e\u5e38\u62b1\u6b49\u8ba9\u60a8\u6709\u5982\u6b64\u611f\u53d7\uff01\u8bf7\u7ed9\u6211\u4eec\u673a\u4f1a\u5f25\u8865\uff0c\u503c\u73ed\u7ecf\u7406\u5c06\u7acb\u5373\u8054\u7cfb\u60a8\u89e3\u51b3\u95ee\u9898\u3002", "agent_response": "\u5f88\u62b1\u6b49\u542c\u5230\u60a8\u7684\u4e0d\u6ee1\uff0c\u6211\u4eec\u5efa\u8bae\u60a8\u76f4\u63a5\u8054\u7cfb\u9152\u5e97\u7ba1\u7406\u5c42\u6216\u5ba2\u6237\u670d\u52a1\u90e8\u95e8\u6765\u89e3\u51b3\u95ee\u9898\u3002\u5982\u679c\u60a8\u8ba4\u4e3a\u9700\u8981\uff0c\u4e5f\u53ef\u4ee5\u54a8\u8be2\u4e13\u4e1a\u5f8b\u5e08\u4ee5\u83b7\u53d6\u66f4\u591a\u6cd5\u5f8b\u5efa\u8bae\u3002\u6211\u4eec\u4f1a\u52aa\u529b\u6539\u8fdb\uff0c\u5e0c\u671b\u60a8\u80fd\u7ed9\u4e88\u6211\u4eec\u6539\u6b63\u7684\u673a\u4f1a\u3002", "evaluation": {"rating": "\u5408\u683c", "reason": "\u5f85\u8bc4\u4f30\u56de\u590d\u63d0\u4f9b\u4e86\u591a\u79cd\u89e3\u51b3\u65b9\u6848\uff0c\u4f46\u60c5\u611f\u4fee\u590d\u7565\u663e\u4e0d\u8db3\u3002", "dimension_scores": {"professionalism": 8, "problem_solving": 7, "tone": 6, "compliance": 8}}}];
+
+            // 渲染概览统计
+            function renderSummary() {
+                const ratings = { '优秀': 0, '合格': 0, '不合格': 0 };
+                const categories = {};
+
+                reportData.forEach(item => {
+                    ratings[item.evaluation.rating] = (ratings[item.evaluation.rating] || 0) + 1;
+
+                    if (!categories[item.category]) {
+                        categories[item.category] = { total: 0, ratings: { '优秀': 0, '合格': 0, '不合格': 0 } };
+                    }
+
+                    categories[item.category].total += 1;
+                    categories[item.category].ratings[item.evaluation.rating] += 1;
+                });
+
+                let html = `<p>总用例数: ${reportData.length}</p>`;
+                html += '<h3>评级分布</h3><ul>';
+
+                for (const [rating, count] of Object.entries(ratings)) {
+                    html += `<li>${rating}: ${count} (${(count/reportData.length*100).toFixed(1)}%)</li>`;
+                }
+
+                html += '</ul><h3>按场景统计</h3><table><tr><th>场景</th><th>用例数</th><th>优秀</th><th>合格</th><th>不合格</th></tr>';
+
+                for (const [category, data] of Object.entries(categories)) {
+                    html += `<tr>
+                        <td>${category}</td>
+                        <td>${data.total}</td>
+                        <td>${data.ratings['优秀']}</td>
+                        <td>${data.ratings['合格']}</td>
+                        <td>${data.ratings['不合格']}</td>
+                    </tr>`;
+                }
+
+                html += '</table>';
+                document.getElementById('summary').innerHTML = html;
+            }
+
+            // 渲染详细结果
+            function renderDetails() {
+                let html = '';
+
+                reportData.forEach(item => {
+                    const ratingClass = item.evaluation.rating.toLowerCase();
+
+                    html += `<div class="case ${ratingClass}">
+                        <div class="rating">${item.test_id} | ${item.category} | 难度: ${item.difficulty} | 评级: <span class="${ratingClass}">${item.evaluation.rating}</span></div>
+                        <p><strong>用户输入:</strong> ${item.user_input}</p>
+                        <p><strong>Agent回复:</strong> ${item.agent_response}</p>
+                        <p><strong>理想回复:</strong> ${item.ideal_output}</p>
+                        <p><strong>评估理由:</strong> ${item.evaluation.reason}</p>
+
+                        <table>
+                            <tr><th>维度</th><th>评分</th></tr>
+                            <tr><td>专业性</td><td>${item.evaluation.dimension_scores.professionalism}/10</td></tr>
+                            <tr><td>问题解决</td><td>${item.evaluation.dimension_scores.problem_solving}/10</td></tr>
+                            <tr><td>情感表达</td><td>${item.evaluation.dimension_scores.tone}/10</td></tr>
+                            <tr><td>规范符合</td><td>${item.evaluation.dimension_scores.compliance}/10</td></tr>
+                        </table>
+                    </div>`;
+                });
+
+                document.getElementById('details').innerHTML = html;
+            }
+
+            // 初始化
+            renderSummary();
+            renderDetails();
+        </script>
+    </body>
+    </html>
+    
