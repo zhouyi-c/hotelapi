@@ -1,3 +1,4 @@
+from langchain import memory
 
 # 协调层 ManagerAgent：负责任务分解、意图识别、任务路由到专家Agent
 from .consult_agent import ConsultAgent
@@ -7,8 +8,8 @@ from .base_agent import BaseAgent
 from langchain.tools import Tool
 from config import Config
 from utils.prompts import get_routing_prompt
-from utils.memory import create_buffer_memory
 from langchain.agents import AgentType
+from utils.memory import get_session_memory, clear_session_memory  # 更新导入
 
 
 class ManagerAgent(BaseAgent):
@@ -18,6 +19,9 @@ class ManagerAgent(BaseAgent):
     """
 
     def __init__(self, conversation_id: str = "default"):
+        self.memory = get_session_memory(conversation_id)
+        self.current_conversation_id = conversation_id  # 存储当前会话ID
+
         # 初始化专家Agent
         self.consult_agent = ConsultAgent(conversation_id)
         self.booking_agent = BookingAgent(conversation_id)
@@ -29,19 +33,15 @@ class ManagerAgent(BaseAgent):
         # 获取路由专用提示词
         prompt = get_routing_prompt()
 
-        # 创建路由记忆
-        memory = create_buffer_memory(conversation_id)
 
         # 初始化BaseAgent
         super().__init__(
             tools=self.tools,
             prompt=prompt,
-            agent_type=AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION
+            memory=self.memory,
+            agent_type=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION
         )
 
-        # 设置记忆
-        self.memory = memory
-        self.current_conversation_id = conversation_id  # 存储当前会话ID
 
 
     def _define_expert_tools(self):
@@ -55,7 +55,7 @@ class ManagerAgent(BaseAgent):
             Tool(
                 name="预订专家",
                 func=self.booking_agent.handle_booking,
-                description="处理房间预订、修改和取消"
+                description="处理房间预订、修改和取消，可能涉及多轮交互以收集必要信息"
             ),
             Tool(
                 name="咨询专家",
@@ -72,26 +72,43 @@ class ManagerAgent(BaseAgent):
     def route_task(self, user_input: str, conversation_id: str = "default") -> str:
         """
         路由任务到合适的专家Agent
+        新增会话记忆管理功能
         :param user_input: 用户输入内容
         :param conversation_id: 会话ID
         :return: 智能回复文本
         """
-        # # 如果切换了会话，更新记忆
-        # if conversation_id != self.memory.conversation_id:
-        #     self.memory = create_buffer_memory(conversation_id)
         # 如果切换了会话，更新记忆
-        if conversation_id != self.current_conversation_id:  # 使用自定义属性
-            self.memory = create_buffer_memory(conversation_id)
-            self.current_conversation_id = conversation_id  # 更新当前会话ID
+        if conversation_id != self.current_conversation_id:
+            self.memory = get_session_memory(conversation_id)
+            self.current_conversation_id = conversation_id
+
         try:
+            # 添加当前对话到记忆
+            self.memory.chat_memory.add_user_message(user_input)
+
             # 使用BaseAgent的run方法处理请求
-            return self.run(
+            response = self.run(
                 input=user_input,
                 memory=self.memory,
                 conversation_id=conversation_id
             )
+
+            # 添加AI响应到记忆
+            self.memory.chat_memory.add_ai_message(response)
+            return response
+
         except Exception as e:
             # 错误处理 - 使用后备专家
-            return self.tools[-1].func(
-                f"系统处理出错: {str(e)}，原始问题: {user_input}"
-            )
+            error_msg = f"系统处理出错: {str(e)}，原始问题: {user_input}"
+            self.memory.chat_memory.add_ai_message(error_msg)
+            return error_msg
+
+    def reset_conversation(self, conversation_id: str):
+        """
+        重置指定会话的记忆
+        :param conversation_id: 会话ID
+        """
+        clear_session_memory(conversation_id)
+        # 重新初始化记忆
+        self.memory = get_session_memory(conversation_id)
+        self.current_conversation_id = conversation_id

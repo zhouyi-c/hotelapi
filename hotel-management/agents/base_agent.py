@@ -5,13 +5,14 @@ from utils.callback import ConsoleCallbackHandler
 
 
 class BaseAgent:
-    def __init__(self, tools, prompt=None, agent_type=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION):
+    def __init__(self, tools, prompt=None, memory=None,agent_type=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION):
         self.llm = ChatOpenAI(
             api_key=Config.QIANFAN_API_KEY,
             base_url=Config.QIANFAN_BASE_URL,
             model=Config.QIANFAN_MODEL,
             temperature=0.7
         )
+
 
         ia_kwargs = dict(
             tools=tools,
@@ -21,21 +22,42 @@ class BaseAgent:
             handle_parsing_errors=True,
             max_iterations=3,
             early_stopping_method="generate",
-            callbacks=[ConsoleCallbackHandler()]
+            callbacks=[ConsoleCallbackHandler()],
+
         )
+        if memory:
+            ia_kwargs['memory'] = memory  # 在初始化前设置
         if prompt is not None:
             ia_kwargs['prompt'] = prompt
         self.agent = initialize_agent(**ia_kwargs)
 
-    def run(self, query: str = None, **kwargs):
+    # base_agent.py
+    def run(self, **kwargs):
         """
-        支持传递prompt、memory等参数，自动适配langchain新版API。
-        - 仅有query时，直接传递query。
-        - 若有prompt、memory等参数（如input、prompt、memory），则全部用kwargs传递，确保模板生效。
-        【注意】如未传递input参数，模板不会生效，务必保证调用时input字段传递用户输入。
+        重构后的运行方法，正确构建LangChain输入
         """
-        if kwargs:
-            # 只用关键词参数（如prompt、memory、input等），不混用位置参数
-            return self.agent.run(**kwargs)
-        else:
-            return self.agent.run(query)
+        # 从kwargs获取必要参数
+        user_input = kwargs.get("input") or kwargs.get("query")
+
+        # 处理记忆
+        chat_history = ""
+        if "memory" in kwargs:
+            chat_history = kwargs['memory'].load_memory_variables({}).get("chat_history", "")
+
+        # 根据代理类型构建输入字典
+        input_dict = {"input": user_input}
+
+        # 添加历史记录（如果提示词需要）
+        if chat_history:
+            input_dict["chat_history"] = chat_history
+
+        # 添加工具描述（路由代理需要）
+        if hasattr(self, 'tools') and self.tools:
+            tool_descriptions = "\n".join([f"- {tool.name}: {tool.description}" for tool in self.tools])
+            input_dict["tools"] = tool_descriptions
+
+        try:
+            # 使用正确格式调用代理
+            return self.agent.run(input_dict)
+        except Exception as e:
+            return f"代理执行出错: {str(e)}"

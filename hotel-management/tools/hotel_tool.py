@@ -1,3 +1,5 @@
+import random
+
 from services.hotel_service import get_hotels_data
 from langchain.tools import BaseTool
 
@@ -20,4 +22,20 @@ class HotelSearchTool(BaseTool):
                 for room in hotel.get('rooms', []):
                     room['recommend_reason'] = '未指定日期，推荐所有可用房间'
         return data
-        return data
+
+
+
+class HotelBookingTool(BaseTool):
+    name:str = "HotelBookingTool"
+    description:str = (
+    "用于执行酒店房间预订，需要按顺序提供以下参数："
+    "1. 入住日期 (格式: YYYY-MM-DD), "
+    "2. 离店日期 (格式: YYYY-MM-DD), "
+    "3. 房型 (如: 豪华大床房), "
+    "4. 客户姓名"
+)
+
+    def _run(self, check_in_date: str, check_out_date: str, room_type: str, guest_name: str) -> str:
+        # 模拟预订逻辑
+        booking_id = random.randint(1000, 9999)
+        return f"预订成功！您的预订号：{booking_id}，{room_type}，入住：{check_in_date}，离店：{check_out_date}，客户：{guest_name}"
