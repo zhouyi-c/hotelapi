@@ -2,7 +2,7 @@ from agents.base_agent import BaseAgent
 from tools.hotel_tool import HotelSearchTool
 
 from utils.prompts import get_complaint_prompt
-from utils.memory import create_buffer_memory
+from utils.memory import get_session_memory  # 更新导入
 
 class ComplaintAgent(BaseAgent):
     """
@@ -12,9 +12,10 @@ class ComplaintAgent(BaseAgent):
     def __init__(self, conversation_id: str = "default"):
         tools = [HotelSearchTool()]
         prompt = get_complaint_prompt()
-        memory = create_buffer_memory(conversation_id)
+        memory = get_session_memory(conversation_id)  # 使用正确的记忆获取函数
         super().__init__(tools, prompt=prompt)
         self.memory = memory
+        self.conversation_id = conversation_id  # 添加会话ID跟踪
 
     def handle_complaint(self, user_message: str, conversation_id: str = "default") -> str:
         """
@@ -23,6 +24,9 @@ class ComplaintAgent(BaseAgent):
         :param conversation_id: 会话ID
         :return: 智能回复文本
         """
-        if conversation_id != "default":
-            self.memory = create_buffer_memory(conversation_id)
+        # 如果会话ID变更，更新记忆
+        if conversation_id != self.conversation_id:
+            self.memory = get_session_memory(conversation_id)
+            self.conversation_id = conversation_id
+
         return self.run(input=user_message, memory=self.memory)
