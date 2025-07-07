@@ -30,7 +30,9 @@ async def chat_endpoint(request: Request, user_input: str):
     处理用户聊天请求，支持多轮对话
     """
     # 从cookies获取会话ID，如果没有则创建新会话
-    session_id = request.cookies.get("session_id", str(uuid.uuid4()))
+    from utils.memory import get_new_session_id
+    # 如果不存在，则生成新的数字会话ID
+    session_id = request.cookies.get("session_id") or get_new_session_id()
 
     # 处理用户请求
     response = user_proxy.handle_request(user_input, session_id)

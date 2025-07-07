@@ -4,3 +4,4 @@ python-dotenv
 langchain
 langchain-openai
 pydantic
+redis>=5.0.0

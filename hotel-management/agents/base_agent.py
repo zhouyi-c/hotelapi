@@ -44,20 +44,13 @@ class BaseAgent:
         if "memory" in kwargs:
             chat_history = kwargs['memory'].load_memory_variables({}).get("chat_history", "")
 
-        # 根据代理类型构建输入字典
+        # 构造输入，仅包含代理实际所需字段，避免 KeyError。
         input_dict = {"input": user_input}
-
-        # 添加历史记录（如果提示词需要）
         if chat_history:
             input_dict["chat_history"] = chat_history
 
-        # 添加工具描述（路由代理需要）
-        if hasattr(self, 'tools') and self.tools:
-            tool_descriptions = "\n".join([f"- {tool.name}: {tool.description}" for tool in self.tools])
-            input_dict["tools"] = tool_descriptions
-
         try:
-            # 使用正确格式调用代理
+            # AgentExecutor.run 可以接受 str 或 dict；统一用 dict 调用。
             return self.agent.run(input_dict)
         except Exception as e:
             return f"代理执行出错: {str(e)}"

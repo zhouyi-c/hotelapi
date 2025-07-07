@@ -11,6 +11,9 @@ class Config:
     QIANFAN_BASE_URL = "https://qianfan.baidubce.com/v2"
     QIANFAN_MODEL = "ernie-4.0-8k"
 
+    # Redis 配置
+    REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+
     # 数据库配置
     DB_PATH = "data/hotels.json"
 

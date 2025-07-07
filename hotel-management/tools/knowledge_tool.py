@@ -24,8 +24,21 @@ class KnowledgeBaseTool(BaseTool):
     vector_db: Optional[Any] = None
     persist_directory: str = "data/chroma_db"
 
-    def __init__(self, file_path="data/knowledge_base.txt"):
+    def __init__(self, file_path: Optional[str] = None):
         super().__init__()
+
+        # --- 路径处理：使用绝对路径避免不同位置执行脚本时出错 --- #
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        if file_path is None:
+            # 构造默认知识库文件的绝对路径
+            file_path = os.path.join(current_dir, '..', 'data', 'knowledge_base.txt')
+
+        # 构造 ChromaDB 持久化目录的绝对路径
+        self.persist_directory = os.path.join(current_dir, '..', 'data', 'chroma_db')
+
+        # 检查文件是否存在
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"知识库文件未找到: {file_path}")
 
         # 初始化嵌入模型
         self.embeddings = HuggingFaceEmbeddings(

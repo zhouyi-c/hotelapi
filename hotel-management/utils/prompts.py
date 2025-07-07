@@ -119,12 +119,15 @@ def get_complaint_prompt():
 
 def get_routing_prompt():
     return PromptTemplate(
-        input_variables=["input", "chat_history", "tools"],  # 需要三个变量
+        input_variables=["input", "chat_history"],
         template="""
-        是一个智能路由助手，负责将用户请求分配给最合适的处理专家。以下是可用的专家：
-    {tools}
+        你是一个智能路由助手，负责将用户请求分配给最合适的处理专家。
+可用专家列表：
+- 投诉专家：处理用户投诉、不满和问题举报
+- 预订专家：处理房间预订、修改和取消
+- 咨询专家：回答一般咨询、景点推荐等
 
-    请根据用户请求的内容，选择最合适的专家处理。你的思考步骤：
+请根据用户请求内容选择最合适的专家。你的思考步骤：
     1. 分析用户请求的核心意图
     2. 选择最能解决用户问题的专家
     3. 如果请求涉及多个领域，选择最紧急或最相关的专家

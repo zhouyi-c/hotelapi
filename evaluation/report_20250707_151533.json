@@ -1,0 +1,110 @@
+[
+  {
+    "test_id": "complaint-001",
+    "category": "投诉",
+    "difficulty": "中等",
+    "user_input": "房间卫生极差，床单有污渍，要求立即处理",
+    "ideal_output": "非常抱歉给您带来不便！我们已安排房务经理带新床单前往您房间，15分钟内解决。为表歉意，赠送您双人自助晚餐券。",
+    "agent_response": "非常抱歉给您带来了不便。我们已经安排了人员前往您的房间进行清洁和更换床单，会尽快解决这个问题。感谢您的反馈。",
+    "evaluation": {
+      "rating": "合格",
+      "reason": "待评估回复基本解决了用户问题，但缺乏具体时间和补偿措施。",
+      "dimension_scores": {
+        "professionalism": 7,
+        "problem_solving": 7,
+        "tone": 8,
+        "compliance": 8
+      }
+    }
+  },
+  {
+    "test_id": "complaint-002",
+    "category": "投诉",
+    "difficulty": "简单",
+    "user_input": "凌晨3点隔壁房间吵闹无法入睡",
+    "ideal_output": "万分抱歉影响您休息！我们已安排您入住安静房间（房号1502），明日早餐免费，需要现在带您过去吗？",
+    "agent_response": "首先，可以尝试礼貌地敲门提醒隔壁的邻居，请他们降低噪音。如果不方便直接沟通或这样做无效，可以使用耳塞等隔音设备来减少噪音对自己的影响。另外，如果情况严重，也可以向物业或相关管理人员反映，请求他们协助解决问题。在处理过程中，保持冷静和礼貌是非常重要的，以避免不必要的冲突。",
+    "evaluation": {
+      "rating": "不合格",
+      "reason": "未提供换房等实质性解决方案，未满足用户核心诉求。",
+      "dimension_scores": {
+        "professionalism": 6,
+        "problem_solving": 3,
+        "tone": 8,
+        "compliance": 7
+      }
+    }
+  },
+  {
+    "test_id": "consult-001",
+    "category": "咨询",
+    "difficulty": "简单",
+    "user_input": "商务套房有会议室吗？能容纳多少人？",
+    "ideal_output": "商务套房配备20㎡会议室，配备投影仪和电话会议设备，最多容纳8人。需要为您预留吗？",
+    "agent_response": "很抱歉，我无法确认商务套房是否配备会议室以及会议室的容纳人数。为了获取准确的答案，建议您联系酒店本身或者参考酒店官方网站上的相关信息。",
+    "evaluation": {
+      "rating": "不合格",
+      "reason": "未直接回答问题，缺乏专业性，未能有效解决问题。",
+      "dimension_scores": {
+        "professionalism": 2,
+        "problem_solving": 2,
+        "tone": 7,
+        "compliance": 7
+      }
+    }
+  },
+  {
+    "test_id": "consult-002",
+    "category": "咨询",
+    "difficulty": "中等",
+    "user_input": "附近有什么评价好的海鲜餐厅？",
+    "ideal_output": "为您推荐三家高评分海鲜餐厅：1. 海港城海鲜酒家(800米,4.7★) 2. 渔人码头(1.2公里,4.6★) 3. 海之味餐厅(900米,4.5★)",
+    "agent_response": "我建议您可以通过搜索引擎或者相关的餐饮点评应用来查找附近评价好的海鲜餐厅，这样可以获取到最新和最准确的信息。",
+    "evaluation": {
+      "rating": "不合格",
+      "reason": "未直接回答用户问题，缺乏具体推荐信息。",
+      "dimension_scores": {
+        "professionalism": 5,
+        "problem_solving": 3,
+        "tone": 7,
+        "compliance": 7
+      }
+    }
+  },
+  {
+    "test_id": "booking-001",
+    "category": "预订",
+    "difficulty": "简单",
+    "user_input": "我想订两晚豪华大床房，下周入住",
+    "ideal_output": "豪华大床房下周可订，价格为每晚1200元。请提供入住日期和会员号（如有），我为您完成预订。",
+    "agent_response": "预订成功！您的预订号为8168，房型是豪华大床房，入住日期是下周一，离店日期是下周三。请记好您的预订信息，期待您的入住！",
+    "evaluation": {
+      "rating": "不合格",
+      "reason": "未确认价格及会员信息，直接预订，流程不规范。",
+      "dimension_scores": {
+        "professionalism": 5,
+        "problem_solving": 7,
+        "tone": 9,
+        "compliance": 4
+      }
+    }
+  },
+  {
+    "test_id": "edge-001",
+    "category": "边界",
+    "difficulty": "困难",
+    "user_input": "你们酒店太差了，我要起诉你们！",
+    "ideal_output": "非常抱歉让您有如此感受！请给我们机会弥补，值班经理将立即联系您解决问题。",
+    "agent_response": "非常抱歉听到您对我们酒店的不满。如果您遇到了问题或服务质量不佳，我们深表歉意。为了解决问题并改进我们的服务，我们希望您能提供更多关于您体验不佳的具体信息。同时，如果您确实考虑采取法律行动，建议您联系我们的客户服务部门，以便我们尽力解决您的问题，或者为您提供适当的法律指导。再次为您的不便表示歉意，并感谢您的反馈。",
+    "evaluation": {
+      "rating": "合格",
+      "reason": "回复表达了歉意并尝试解决问题，但情感适宜度略低。",
+      "dimension_scores": {
+        "professionalism": 8,
+        "problem_solving": 7,
+        "tone": 6,
+        "compliance": 8
+      }
+    }
+  }
+]
