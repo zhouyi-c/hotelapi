@@ -10,8 +10,7 @@ def get_consult_prompt():
     更新后的咨询场景Prompt（集成ReAct框架）
     """
     return PromptTemplate(
-        # 投诉提示词
-        input_variables=["input", "chat_history"],
+        input_variables=["input"],
         template="""
         你是一个酒店咨询助手，请严格按以下步骤处理用户问题：
 
@@ -42,34 +41,26 @@ def get_consult_prompt():
 
 def get_booking_prompt():
     """
-    更新后的预订场景Prompt，支持多轮交互收集信息
+    预订场景Prompt。
+    :return: PromptTemplate对象
     """
     return PromptTemplate(
-        input_variables=["input", "chat_history"],
+        input_variables=["input"],
         template="""
-        你是酒店预订专员，负责处理用户的房间预订请求。
-        你需要收集以下信息才能完成预订：
-        [必填] 入住日期 (如: 2023-10-01)
-        [必填] 离店日期 (如: 2023-10-05)
-        [必填] 房型 (如: 豪华大床房)
-        [必填] 客户姓名
+        你是酒店预订专员，负责解答和处理用户的房间预订相关请求。
 
         工作流程：
-        1. 检查对话历史中是否已收集所有必填信息
-        2. 如果缺少信息，询问用户缺少的那一项
-        3. 当所有信息收集齐全后，调用HotelBookingTool完成预订
+        1. 解析用户请求中的关键信息：入住日期、房型、天数
+        2. 使用HotelSearchTool查询房态和价格
+        3. 提供明确的预订选项
+        4. 引导用户完成预订
 
         回复要求：
-        1. 每次只询问一个缺失的信息
-        2. 确认信息时要清晰明确
-        3. 预订成功后提供完整的预订信息
+        1. 明确告知预订状态、剩余房型、价格等关键信息
+        2. 提供具体的预订选项（如："豪华大床房每晚1200元，是否为您预订？"）
+        3. 回复简洁，避免冗余
 
-        当前对话历史：
-        {chat_history}
-
-        用户最新请求：{input}
-
-        你的思考过程：
+        用户请求：{input}
         """
     )
 
@@ -79,8 +70,7 @@ def get_complaint_prompt():
     投诉处理提示词（集成Few-shot范例）
     """
     return PromptTemplate(
-        # 投诉提示词
-        input_variables=["input", "chat_history"],
+        input_variables=["input"],
         template="""
         您是一名五星级酒店值班经理（员工编号A100）。请参考以下专业处理范例：
 
@@ -115,13 +105,9 @@ def get_complaint_prompt():
     )
 
 # 在 utils/prompts.py 中添加路由提示词
-
-
 def get_routing_prompt():
-    return PromptTemplate(
-        input_variables=["input", "chat_history", "tools"],  # 需要三个变量
-        template="""
-        是一个智能路由助手，负责将用户请求分配给最合适的处理专家。以下是可用的专家：
+    """获取路由专用的提示词模板"""
+    return """你是一个智能路由助手，负责将用户请求分配给最合适的处理专家。以下是可用的专家：
     {tools}
 
     请根据用户请求的内容，选择最合适的专家处理。你的思考步骤：
@@ -134,10 +120,10 @@ def get_routing_prompt():
     - 不要尝试自己回答问题，只负责路由
 
     当前对话历史：
-    {chat_history}
+    {history}
 
     用户请求：{input}
 
     你的思考过程：
-        """
-    )
+    """
+
